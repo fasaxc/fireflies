@@ -48,6 +48,7 @@ int main(void)
 {
   uint16_t start_delay[4];
   uint8_t position[4] = { 0, 0, 0, 0 };
+  uint16_t levels[4] = { 0, 0, 0, 0 };
   uint8_t i;
 
   /* PWM PINS as outputs.., */
@@ -65,7 +66,7 @@ int main(void)
 
   for (i = 0; i < 4; i++)
   {
-    start_delay[i] = rand_byte();
+    start_delay[i] = (((uint16_t)rand_byte()) << 8) + rand_byte();
   }
 
   while (1)
@@ -84,7 +85,11 @@ int main(void)
         position[i] = 0;
         start_delay[i] = rand_byte();
         start_delay[i] += rand_byte();
+        start_delay[i] += rand_byte();
+        start_delay[i] += rand_byte();
       }
+      levels[i] >>= 2;
+      levels[i] += (((uint16_t)pgm_read_byte(&(PATTERN[position[i]]))) * 3) >> 2;
     }
     _delay_ms(25);
   }
